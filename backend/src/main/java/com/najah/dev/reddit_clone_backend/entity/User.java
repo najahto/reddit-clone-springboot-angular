@@ -22,12 +22,12 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Username is required")
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @NotBlank(message = "Email is required")
     @Email
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @NotBlank(message = "Password is required")

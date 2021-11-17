@@ -30,7 +30,7 @@ public class Subreddit {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(fetch = LAZY)
+    @OneToMany(fetch = LAZY,mappedBy = "subreddit")
     private List<Post> posts;
 
     @ManyToOne(fetch = LAZY)
