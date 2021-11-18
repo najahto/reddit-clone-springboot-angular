@@ -1,6 +1,7 @@
 package com.najah.dev.reddit_clone_backend.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Subreddit {
     @Id
     @Column(name = "id", nullable = false)
