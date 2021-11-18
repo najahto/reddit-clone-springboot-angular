@@ -1,5 +1,7 @@
 package com.najah.dev.reddit_clone_backend.resource;
 
+import com.najah.dev.reddit_clone_backend.dto.AuthenticationResponse;
+import com.najah.dev.reddit_clone_backend.dto.LoginRequest;
 import com.najah.dev.reddit_clone_backend.dto.RegisterRequest;
 import com.najah.dev.reddit_clone_backend.service.implementation.AuthServiceImpl;
 import com.najah.dev.reddit_clone_backend.utility.Response;
@@ -35,7 +37,7 @@ public class AuthResource {
     }
 
     @GetMapping("accountVerification/{token}")
-    public ResponseEntity<Response> verifyAccount(@PathVariable String token){
+    public ResponseEntity<Response> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return ResponseEntity.ok(
                 Response.builder()
@@ -45,6 +47,11 @@ public class AuthResource {
                         .statusCode(OK.value())
                         .build()
         );
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 
 }
