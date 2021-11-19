@@ -12,10 +12,12 @@ import com.najah.dev.reddit_clone_backend.repository.VerificationTokenRepository
 import com.najah.dev.reddit_clone_backend.security.JwtProvider;
 import com.najah.dev.reddit_clone_backend.service.AuthService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ import static java.time.Instant.now;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 @Transactional
 public class AuthServiceImpl implements AuthService {
 
@@ -67,6 +70,13 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
         return new AuthenticationResponse(token,loginRequest.getUsername());
+    }
+
+    public User getCurrentUser() {
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(principal.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
     }
 
     private String generateVerificationToken(User user) {
