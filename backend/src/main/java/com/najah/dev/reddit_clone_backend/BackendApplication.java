@@ -9,7 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @Slf4j
 @SpringBootApplication
-//@MapperScan("com.najah.dev.reddit_clone_backend.mapper")
 public class BackendApplication {
 
     public static void main(String[] args) {

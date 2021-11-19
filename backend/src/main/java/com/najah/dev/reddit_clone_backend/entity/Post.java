@@ -21,12 +21,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class Post {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "postId", nullable = false)
+    private Long postId;
 
     @NotBlank(message = "Post name cannot be empty or null")
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "postName", nullable = false)
+    private String postName;
 
     @Column(name = "url", nullable = true)
     private String url;
