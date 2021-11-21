@@ -2,6 +2,7 @@ package com.najah.dev.reddit_clone_backend.service.implementation;
 
 import com.najah.dev.reddit_clone_backend.dto.AuthenticationResponse;
 import com.najah.dev.reddit_clone_backend.dto.LoginRequest;
+import com.najah.dev.reddit_clone_backend.dto.RefreshTokenRequest;
 import com.najah.dev.reddit_clone_backend.dto.RegisterRequest;
 import com.najah.dev.reddit_clone_backend.entity.EmailNotification;
 import com.najah.dev.reddit_clone_backend.entity.User;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +42,7 @@ public class AuthServiceImpl implements AuthService {
     private final MailServiceImpl mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenServiceImpl refreshTokenService;
 
     @Override
     public void signup(RegisterRequest registerRequest) {
@@ -69,7 +72,12 @@ public class AuthServiceImpl implements AuthService {
                 loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
-        return new AuthenticationResponse(token,loginRequest.getUsername());
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .username(loginRequest.getUsername())
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .build();
     }
 
     public User getCurrentUser() {
@@ -77,6 +85,18 @@ public class AuthServiceImpl implements AuthService {
                 getContext().getAuthentication().getPrincipal();
         return userRepository.findByUsername(principal.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
+    }
+
+    @Override
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .username(refreshTokenRequest.getUsername())
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .build();
     }
 
     private String generateVerificationToken(User user) {
@@ -88,7 +108,6 @@ public class AuthServiceImpl implements AuthService {
 
         return token;
     }
-
 
     private void enableUser(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();

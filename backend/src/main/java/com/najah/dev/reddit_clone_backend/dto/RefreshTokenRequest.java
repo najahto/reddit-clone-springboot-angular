@@ -1,19 +1,18 @@
 package com.najah.dev.reddit_clone_backend.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import javax.validation.constraints.NotBlank;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    private String authenticationToken;
-    private String username;
-    private Instant expiresAt;
+public class RefreshTokenRequest {
+
+    @NotBlank
     private String refreshToken;
+
+    private String username;
 }
