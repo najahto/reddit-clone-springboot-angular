@@ -5,8 +5,11 @@ public enum VoteType {
     DOWNVOTE(-1),
     ;
 
-    VoteType(int direction){
+    private int direction;
 
+    VoteType(int direction){
     }
+
+
 
 }

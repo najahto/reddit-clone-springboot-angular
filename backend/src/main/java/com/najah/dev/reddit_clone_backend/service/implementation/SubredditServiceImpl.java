@@ -7,13 +7,10 @@ import com.najah.dev.reddit_clone_backend.mapper.SubredditMapper;
 import com.najah.dev.reddit_clone_backend.repository.SubredditRepository;
 import com.najah.dev.reddit_clone_backend.service.SubredditService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
