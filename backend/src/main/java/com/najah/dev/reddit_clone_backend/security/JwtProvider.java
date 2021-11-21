@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.sql.Date;
 import java.time.Instant;
+import java.util.Date;
 
 import static io.jsonwebtoken.Jwts.parserBuilder;
 import static java.util.Date.from;
@@ -22,6 +22,9 @@ import static java.util.Date.from;
 public class JwtProvider {
 
     private KeyStore keyStore;
+
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
 
     @PostConstruct
     public void init() {
@@ -41,6 +44,7 @@ public class JwtProvider {
                 .setSubject(principal.getUsername())
                 .setIssuedAt(from(Instant.now()))
                 .signWith(getPrivateKey())
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
                 .compact();
     }
 
@@ -52,26 +56,9 @@ public class JwtProvider {
                 .compact();
     }
 
-    private PrivateKey getPrivateKey() {
-        try {
-            return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
-        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            throw new RedditCloneException("Exception occurred while retrieving public key from keystore", e);
-        }
-    }
-
     public boolean validateToken(String jwt) {
         parserBuilder().setSigningKey(getPublicKey()).build().parseClaimsJws(jwt);
         return true;
-    }
-
-    private PublicKey getPublicKey() {
-        try {
-            return keyStore.getCertificate("springblog").getPublicKey();
-        } catch (KeyStoreException e) {
-            throw new RedditCloneException("Exception occurred while " +
-                    "retrieving public key from keystore", e);
-        }
     }
 
     public String getUsernameFromJwt(String token) {
@@ -82,6 +69,27 @@ public class JwtProvider {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public Long getJwtExpirationInMillis() {
+        return jwtExpirationInMillis;
+    }
+
+    private PrivateKey getPrivateKey() {
+        try {
+            return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
+            throw new RedditCloneException("Exception occurred while retrieving public key from keystore", e);
+        }
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new RedditCloneException("Exception occurred while " +
+                    "retrieving public key from keystore", e);
+        }
     }
 
 
