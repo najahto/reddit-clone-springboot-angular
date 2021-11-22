@@ -1,8 +1,8 @@
-.register-section{
+.login-section{
     margin: 100px;
 }
 
-.sign-up {
+.login {
     background-color: #0079D3;
     border-color: #0079D3;
     color: aliceblue;
@@ -16,7 +16,7 @@
     font-weight: 700;
     letter-spacing: .5px;
     line-height: 24px;
-    padding: 6px 50px;
+    text-transform: uppercase;
+    padding: 6px 16px;
     opacity: 1;
   }
-  
