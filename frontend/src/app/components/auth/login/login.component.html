@@ -1,0 +1,74 @@
+<div class="login-section">
+    <div class="row justify-content-center">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header" style="text-align: center">Login</div>
+                <div class="card-body">
+                    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="form-group row">
+                            <label for="user_name" class="col-md-4 col-form-label text-md-right">Username</label>
+                            <div class="col-md-6">
+                                <input type="text" id="user_name" class="form-control" formControlName="username"
+                                    name="user_name" required
+                                    [ngClass]="{'is-invalid': submitted && f['username'].errors}" autofocus>
+
+                                <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['username'].errors['required']">
+                                        Username is required
+                                    </div>
+                                    <div *ngIf="f['username'].errors['minlength']">
+                                        Username must be at least 6 characters
+                                    </div>
+                                    <div *ngIf="f['username'].errors['maxlength']">
+                                        Username must not exceed 20 characters
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                            <div class="col-md-6">
+                                <input type="password" id="password" class="form-control" formControlName="password"
+                                    name="password" required
+                                    [ngClass]="{'is-invalid': submitted && f['password'].errors}">
+
+                                <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['password'].errors['required']">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="f['password'].errors['minlength']">
+                                        Password must be at least 6 characters
+                                    </div>
+                                    <div *ngIf="f['password'].errors['maxlength']">
+                                        Username must not exceed 40 characters
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <span class="col-md-6 offset-md-4">
+                            <button type="submit" class="login">
+                                LOGIN
+                            </button>
+                            <span style="padding-left: 15px; font-size: 14px;">New to Reddit-clone? <a
+                                    routerLink="/signup"><strong>Sign up</strong></a></span>
+                        </span>
+                        <div class="mt-3">
+                            <div class="alter alert-danger p-3" *ngIf="isError" role="alert">
+                                Login Failed. Please check your credentials and try again!
+                            </div>
+                            <div class="alter alert-success p-3" *ngIf="registerSuccessMessage">
+                                {{registerSuccessMessage}}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+</div>
